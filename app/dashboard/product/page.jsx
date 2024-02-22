@@ -2,9 +2,15 @@ import Image from "next/image";
 import Link from "next/link";
 import Search from "@/app/ui/dashboard/search/search";
 import Panigation from "@/app/ui/dashboard/panigation/panigation";
-import style from '../../ui/dashboard/product/product.module.css'
+import style from "../../ui/dashboard/product/product.module.css";
+import { userProduct } from "@/app/lib/data";
+import { deleteProduct } from "@/app/lib/actions";
 
-const ProductPage = () => {
+const ProductPage = async ({ searchParams }) => {
+  const q = searchParams?.q || "";
+  const page = searchParams?.page || 1;
+  const { products, count } = await userProduct(q, page);
+
   return (
     <div className={style.container}>
       <div className={style.top}>
@@ -19,45 +25,54 @@ const ProductPage = () => {
             <td>Title</td>
             <td>Description</td>
             <td>Price</td>
-            <td>Created</td>
+            <td>Color</td>
+            <td>Size</td>
+            {/* <td>Created</td> */}
             <td>Stock</td>
             <td>Action</td>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>
-              <div className={style.product}>
-                <Image
-                  src="/noproduct.jpg"
-                  alt=""
-                  width={40}
-                  height={40}
-                  className={style.productImage}
-                ></Image>
-                Iphone
-              </div>
-            </td>
-            <td>dinhthinh1712@gmail.com</td>
-            <td>17-12-2000</td>
-            <td>Admin</td>
-            <td>active</td>
-            <td>
-              <div className={style.buttons}>
-                <Link href={"/dashboard/product/test"}>
-                  <button className={`${style.button} ${style.view}`}>
-                    View
-                  </button>
-                </Link>
-                <button className={`${style.button} ${style.delete}`}>
-                  Delete
-                </button>
-              </div>
-            </td>
-          </tr>
+          {products.map((prod) => (
+            <tr key={prod.id}>
+              <td>
+                <div className={style.product}>
+                  <Image
+                    src="/noproduct.jpg"
+                    alt=""
+                    width={40}
+                    height={40}
+                    className={style.productImage}
+                  ></Image>
+                  {prod.title}
+                </div>
+              </td>
+              <td>{prod.desc}</td>
+              <td>{prod.price}</td>
+              <td>{prod.color}</td>
+              <td>{prod.size}</td>
+              {/* <td>{prod.createAt}</td> */}
+              <td>{prod.stock}</td>
+              <td>
+                <div className={style.buttons}>
+                  <Link href={`/dashboard/product/${prod.id}`}>
+                    <button className={`${style.button} ${style.view}`}>
+                      View
+                    </button>
+                  </Link>
+                  <form action={deleteProduct}>
+                    <input type="hidden" name="id" defaultValue={prod.id} />
+                    <button className={`${style.button} ${style.delete}`}>
+                      Delete
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
-      <Panigation></Panigation>
+      <Panigation count={count}></Panigation>
     </div>
   );
 };
