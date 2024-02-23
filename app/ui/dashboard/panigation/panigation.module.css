@@ -1,12 +1,16 @@
-.container{
-    padding: 10px;
-    display: flex;
-    justify-content: space-between;
+.container {
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
 }
 
-.button{
-    cursor: pointer;
-    padding: 5px 10px;
-    border-radius: 5px;
+.button {
+  cursor: pointer;
+  padding: 10px 10px;
+  border-radius: 5px;
+  border: none;
 }
 
+.button:hover{
+    background-color: var(--textsoft);
+}
